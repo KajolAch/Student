@@ -66,7 +66,7 @@ class Repository:
             self.instructor_prettytable()
 
     def _read_student_file(self, path):
-        """"""
+        """read the student file"""
         try:
             for cwid, name, major in file_reading_gen(path, 3, sep='\t',
                                                       header=False):
@@ -77,6 +77,7 @@ class Repository:
             print(ve)
 
     def _read_instructors_file(self, path):
+        """read the instructors file"""
         try:
             for cwid, name, dept in file_reading_gen(path, 3, sep='\t',
                                                      header=False):
@@ -87,13 +88,14 @@ class Repository:
             print(ve)
 
     def _read_grades_file(self, path):
+        """read the grades file"""
         try:
             for cwid, course, grade, instructor_cwid in file_reading_gen(path, 4, sep='\t', header=False):
                 if cwid in self._students:
                     self._students[cwid].add_courses(course, grade)
                 else:
                     print(f"Found grade for unknown student{cwid}")
-                if cwid in self._students:
+                if cwid in self._instructors:
                     self._instructors[instructor_cwid].add_courses(course)
                 else:
                     print(f"Got course of unknown instructor{instructor_cwid}")
@@ -123,4 +125,4 @@ class Repository:
 
 
 if __name__ == '__main__':
-    stevens = Repository('\SEM 3\SSW 810 Python\HW01', True)
+    stevens = Repository('\SEM 3\Student\Student', True)

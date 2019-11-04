@@ -26,14 +26,14 @@ class TestModuleGeneratorFile(unittest.TestCase):
                    '11658': 'Kelly, P',
                    '11714': 'Morton, A', '11788': 'Fuller, E'}
 
-        stevens = Repository('\SEM 3\SSW 810 Python\HW01', True)
+        stevens = Repository('\SEM 3\Student\Student', True)
         for student in (stevens._students):
             actual_result[student] = stevens._students[student]._name
         self.assertEqual(actual_result, exp_res)
         # Repository._read_student_file()
     
     def test_instructor_file(self):
-        stevens = Repository('\SEM 3\SSW 810 Python\HW01', True)
+        stevens = Repository('\SEM 3\Student\Student', True)
         actual_result = dict(
 
         )
