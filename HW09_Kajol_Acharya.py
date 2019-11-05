@@ -95,7 +95,7 @@ class Repository:
                     self._students[cwid].add_courses(course, grade)
                 else:
                     print(f"Found grade for unknown student{cwid}")
-                if cwid in self._instructors:
+                if instructor_cwid in self._instructors:
                     self._instructors[instructor_cwid].add_courses(course)
                 else:
                     print(f"Got course of unknown instructor{instructor_cwid}")
@@ -112,6 +112,7 @@ class Repository:
             pt.add_row(student.pt_row())
         print("Student Summary")    
         print(pt)
+
 
     def instructor_prettytable(self):
         pt = PrettyTable()
