@@ -68,8 +68,8 @@ class Repository:
     def _read_student_file(self, path):
         """read the student file"""
         try:
-            for cwid, name, major in file_reading_gen(path, 3, sep='\t',
-                                                      header=False):
+            for cwid, name, major in file_reading_gen(path, 3, sep=';',
+                                                      header=True):
                 self._students[cwid] = Student(cwid, name, major)
         except FileNotFoundError as fne:
             print(fne)
@@ -79,8 +79,8 @@ class Repository:
     def _read_instructors_file(self, path):
         """read the instructors file"""
         try:
-            for cwid, name, dept in file_reading_gen(path, 3, sep='\t',
-                                                     header=False):
+            for cwid, name, dept in file_reading_gen(path, 3, sep='|',
+                                                     header=True):
                 self._instructors[cwid] = Instructor(cwid, name, dept)
         except FileNotFoundError as fne:
             print(fne)
@@ -90,7 +90,7 @@ class Repository:
     def _read_grades_file(self, path):
         """read the grades file"""
         try:
-            for cwid, course, grade, instructor_cwid in file_reading_gen(path, 4, sep='\t', header=False):
+            for cwid, course, grade, instructor_cwid in file_reading_gen(path, 4, sep='|', header=True):
                 if cwid in self._students:
                     self._students[cwid].add_courses(course, grade)
                 else:
