@@ -2,6 +2,7 @@
 import unittest
 import os
 from HW09_Kajol_Acharya import Instructor, Student, Repository
+from HW10_Kajol_Acharya import Major
 # !/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
@@ -69,7 +70,19 @@ class TestModuleGeneratorFile(unittest.TestCase):
             instructor_res[instructor._cwid] = instructor._name, instructor._dept, sorted(instructor._courses.keys())
         
         #print(instructor_res)
-        self.assertEqual(exp_res,instructor_res)   
+        self.assertEqual(exp_res,instructor_res)  
+
+    def test_majors_prettytable(self):
+        stevens = Repository('\SEM 3\Student\Student', False)
+        expected_major ={'SFEN': ('SFEN', {'SSW 567', 'SSW 564', 'SSW 540', 'SSW 555'},
+         {'CS 501', 'CS 513', 'CS 545'}), 'SYEN': ('SYEN', {'SYS 800', 'SYS 671', 'SYS 612'}, 
+         {'SSW 540', 'SSW 810', 'SSW 565'})}
+        major_res = dict()
+        for major in stevens._majors.values():
+            major_res[major._dept] = major._dept, major._required, major._electives
+        self.assertEqual(expected_major,major_res)  
+
+
       
 if __name__ == '__main__':
     unittest.main(exit=False, verbosity=2)
