@@ -99,8 +99,11 @@ class Repository:
         try:
             for cwid, name, major in file_reading_gen(path, 3, sep='\t',
                                                       header=True):
-                self._students[cwid] = Student(cwid, name, major)             
-                self._students[cwid].add_major(major, self._majors)
+                self._students[cwid] = Student(cwid, name, major) 
+                if major in self._majors:            
+                    self._students[cwid].add_major(major, self._majors)
+                else:
+                    print(f"Found unknown major for student{major}")    
         except FileNotFoundError as fne:
             print(fne)
         except ValueError as ve:
@@ -180,7 +183,7 @@ class Repository:
             for i,row in enumerate(db.execute(query)):
                 pt.add_row(row)
                 self._instructorsDB[i] =row
-            print("Instructor Summary")     
+            print("Instructor DB Summary")     
             print(pt)
 if __name__ == '__main__':
     stevens = Repository('\SEM 3\Student\Student', True)
