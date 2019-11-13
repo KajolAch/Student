@@ -1,3 +1,4 @@
+import sqlite3
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
@@ -5,7 +6,7 @@ Created on Wed Oct 30 2019
 
 @author: Kajol Acharya
 
-     HW09_Kajol_Acharya implements class Student,Instructor, Repository
+     HW011_Kajol_Acharya implements class Student,Instructor, Repository
 """
 from HW08_Kajol_Acharya import file_reading_gen
 from prettytable import PrettyTable
@@ -64,6 +65,7 @@ class Repository:
         self.path = path
         self._students = dict()
         self._instructors = dict()
+        self._instructorsDB = dict()
         self._majors = dict()
         self._read_majors_file(os.path.join(path, 'majors.txt'))
         self._read_student_file(os.path.join(path, 'students.txt'))
@@ -74,7 +76,8 @@ class Repository:
             self.majors_prettytable()
             self.student_prettytable()
             self.instructor_prettytable()
-            
+            self.instructor_table_db("/sqlite/810_startup.db")
+
     def _read_majors_file(self, path):
         """read the majors file"""
         try:
@@ -94,7 +97,7 @@ class Repository:
     def _read_student_file(self, path):
         """read the student file"""
         try:
-            for cwid, name, major in file_reading_gen(path, 3, sep=';',
+            for cwid, name, major in file_reading_gen(path, 3, sep='\t',
                                                       header=True):
                 self._students[cwid] = Student(cwid, name, major)             
                 self._students[cwid].add_major(major, self._majors)
@@ -106,7 +109,7 @@ class Repository:
     def _read_instructors_file(self, path):
         """read the instructors file"""
         try:
-            for cwid, name, dept in file_reading_gen(path, 3, sep='|',
+            for cwid, name, dept in file_reading_gen(path, 3, sep='\t',
                                                      header=True):
                 self._instructors[cwid] = Instructor(cwid, name, dept)
         except FileNotFoundError as fne:
@@ -117,7 +120,7 @@ class Repository:
     def _read_grades_file(self, path):
         """read the grades file"""
         try:
-            for cwid, course, grade, instructor_cwid in file_reading_gen(path, 4, sep='|', header=True):
+            for cwid, course, grade, instructor_cwid in file_reading_gen(path, 4, sep='\t', header=True):
                 if cwid in self._students:
                     self._students[cwid].add_courses(course, grade)
                 else:
@@ -159,5 +162,25 @@ class Repository:
             print("Majors Summary")     
             print(pt)
             
+    def instructor_table_db(self,DB_FILE):
+        """get details from sqlite3 DB"""    
+        # DB_FILE = "/sqlite/810_startup.db"
+        try:
+            db = sqlite3.connect(DB_FILE)
+        except sqlite3.OperationalError:
+            print(f"Error:Unable to open database at {DB_FILE}")    
+        else:
+            query = """select i.cwid,i.name,i.dept,g.Course, COUNT(StudentCWID)
+                    from Instructors as i,  Grades as g
+                        where g.InstructorCWID = i.CWID
+                    group by g.Course , i.Name
+                    ORDER BY COUNT(StudentCWID) ASC"""
+            pt = PrettyTable()
+            pt.field_names = ['CWID', 'Name', 'Dept', 'Course', '#Students']
+            for i,row in enumerate(db.execute(query)):
+                pt.add_row(row)
+                self._instructorsDB[i] =row
+            print("Instructor Summary")     
+            print(pt)
 if __name__ == '__main__':
     stevens = Repository('\SEM 3\Student\Student', True)
